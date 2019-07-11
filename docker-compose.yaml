@@ -1,0 +1,28 @@
+version: '3'
+services:
+  node:
+    image:  registry.safexain.com/safechain/node-prod:latest
+    volumes:
+        - ./apcontent:/var/www/java/storage
+        - ./apconfig:/var/www/java/sites-available
+        - ./cert:/var/www/java/ssl
+    restart: always
+    ports:
+    - "10003:10003"
+    - "5005:5005"
+    - "8898:8898"
+
+
+  apache:
+    image: registry.safexain.com/safechain/apache2ssl_sx:latest
+    restart: always
+    ports:
+    - "80:80"
+    - "443:443"
+    volumes:
+    - ./apconfig:/etc/apache2/sites-available
+    - ./cert:/etc/ssl
+    - ./apcontent:/var/www/html
+    depends_on:
+      - node
+    command: /bin/sh -c "a2enmod proxy proxy_http proxy_wstunnel && a2ensite client-80.conf client-ssl.conf && /usr/sbin/apache2ctl -D FOREGROUND"
