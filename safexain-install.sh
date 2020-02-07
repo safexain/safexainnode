@@ -16,6 +16,8 @@ echo "Now we are going to install docker and docker compose"
 wget https://raw.githubusercontent.com/safexain/DockerScript/master/docker.sh
 sudo chmod +x docker.sh
 sudo ./docker.sh -y
+sudo systemctl enable docker
+sudo systemctl start docker
 
 echo "let's check docker versions"
 sudo docker --version
